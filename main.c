@@ -42,6 +42,31 @@ void atbash(char* a, char* out){
     }
 }
 
+int exist(char* s){
+    int len_s = strlen(s);
+    int len_w = strlen(word);
+    int flag = 1;
+    if(len_s < len_w){
+        return 0;
+    }
+    for(int i = 0; i < len_w; i++){
+        for(int j = 0; j < len_s; j++){
+            if(word[i] == s[j]){ //if this char is exist in the given word (char --> 0)
+                s[j] = 0;
+                flag = 1;
+                break; //i dont want to put 0 in double same char
+            }
+            else{
+                flag = 0;
+            }
+        }
+        if(flag == 0){
+            return 0;
+        }
+    }
+    return 1;
+}
+
 void reverse_str(char* a, char* out){
 
     int len = strlen(a);
@@ -65,7 +90,7 @@ void clear_white(char* a, char* b){
     }
 }
 
-int commper_str(char* a, char* b){
+int compare_str(char* a, char* b){
     int len_a = strlen(a);
     int len_b = strlen(b);
     if(len_b != len_a) return FALSE;
@@ -164,12 +189,12 @@ void main(){
             clear_white(sub_at_r, sub_at_r_clean);
 
 
-            if(commper_str(word_at, sub_at_clean)){
+            if(compare_str(word_at, sub_at_clean)){
                 if(first_print==0){ printf("~"); }
                 printf("%s,", sub_at);
                 first_print = 0;
             }
-            if(commper_str(word_at, sub_at_r_clean)){
+            if(compare_str(word_at, sub_at_r_clean)){
                 if(first_print==0){ printf("~"); }
                 printf("%s,", sub_at_r);
                 first_print = 0;
@@ -182,6 +207,37 @@ void main(){
         // if(text[i] == '~') break; // End of text
     }
 
+    printf("\nAnagram Sequences: ");
+    for(int i = 0; i < TXT-1; i++){
+        if(isalpha(text[i])==0) continue;
 
+        for(int j = i+1; j < TXT; j++){
+            if(isalpha(text[j])==0) continue;
+
+            if(text[j] == '\0') break; // End of text
+
+            char *sub = (char*) malloc((j-i+1)*sizeof(char));
+            strncpy(sub, text+i, j-i+2);
+            sub[j-i+1] = '\0';
+            int len = strlen(sub);
+            char *sub2 = (char*) malloc((len+1)*sizeof(char));
+            strncpy(sub2, sub, len+1);
+            int flag = 1;
+            if(exist(sub)==1){ // if all the chars in sub word exist in the input word
+                for(int i = 0; i < len; i++){ //check if all the array is 0
+                    if(sub[i] != 0 && sub[i] != ' ' && sub[i] != '\n' && sub[i] != '\t'){
+                        flag = 0;
+                        break;
+                    }
+                }
+            }
+            else{
+                flag = 0;
+            }
+            if(flag == 1){
+                printf("%s~", sub2);
+            }
+        }
+    }
     
 }
