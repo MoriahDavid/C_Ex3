@@ -100,10 +100,10 @@ int compare_str(char* a, char* b){
     return TRUE;
 }
 
-void main(){
+void get_word(){
     char c;
     char t;
-    for(int i = 0; i < WORD; i++){
+    for(int i = 0; i < WORD; i++){ // gets the word
         char c;
         scanf("%c", &c);
         if(c != ' ' && c != '\n' && c != '\t'){
@@ -114,7 +114,10 @@ void main(){
             break;
         }
     }
-    for(int i = 0; i < TXT; i++){
+}
+
+void get_text(){
+    for(int i = 0; i < TXT; i++){ // gets the text
         char c;
         scanf("%c", &c);
         if(c != '~'){
@@ -124,18 +127,23 @@ void main(){
             break;
         }
     }
+}
+
+void print_gematria(){
+    int text_len=strlen(text);
+
     printf("Gematria Sequences: ");
     int word_gim = gimetry_sum(word);
     int first_print=1;
-    for(int i = 0; i < TXT-1; i++){
+    for(int i = 0; i < text_len-1; i++){
         if(isalpha(text[i])==0) continue;
 
-        for(int j = i+1; j < TXT; j++){
+        for(int j = i+1; j < text_len; j++){
             if(isalpha(text[j])==0) continue;
 
             if(text[j] == '\0') break; // End of text
 
-            char *sub = (char*) malloc((j-i+1)*sizeof(char));
+            char *sub = (char*) malloc((j-i+2)*sizeof(char));
             strncpy(sub, text+i, j-i+2);
             sub[j-i+1] = '\0';
             int sub_gim = gimetry_sum(sub);            
@@ -150,78 +158,72 @@ void main(){
             }
         }
     }
+}
+
+void print_atbash(){
+    
+    int text_len=strlen(text);
     printf("\nAtbash Sequences: ");
     char word_at[WORD];
     atbash(word, word_at);
-    // printf("%s\n", word_at);
     char word_at_r[WORD];
     reverse_str(word_at, word_at_r);
-    // printf("%s\n", word_at_r);
-    first_print=1;
-    int text_len=strlen(text);
+    int first_print=1;
+
     for(int i = 0; i < text_len-1; i++){
-        // if(isalpha(text[i])==0) continue;
-
         for(int j = i+1; j < text_len; j++){
-            // if(isalpha(text[j])a==0) continue;
-            // printf("(%c)[%d,%d]", text[j],i,j);
-            // if(text[j] == '\0') break; // End of text
+            
+            if(text[j] == '\0'  || text[j]== '~') break; // End of text
 
-            // printf("%d-\n", (j-i+1)*sizeof(char));
             char *sub = (char*) malloc((j-i+2)*sizeof(char));
-            strncpy(sub, text+i, j-i+2);
+            strncpy(sub, text+i, j-i+1);
             sub[j-i+1] = '\0';
-        
-            // printf("(%s)\n", sub);
-            // printf("(%p)\n", sub);
 
             char sub_at[WORD];
             char sub_at_clean[WORD];
-            atbash(sub, sub_at);
-            // printf("{%s}", sub_at);
-            clear_white(sub_at, sub_at_clean);
-            // printf("[%s]", sub_at_clean);
-            // return;
-        
             char sub_at_r[WORD];
-            reverse_str(sub_at, sub_at_r);
             char sub_at_r_clean[WORD];
+        
+            atbash(sub, sub_at);
+            clear_white(sub_at, sub_at_clean);
+            reverse_str(sub_at, sub_at_r);
             clear_white(sub_at_r, sub_at_r_clean);
 
-
-            if(compare_str(word_at, sub_at_clean)){
+            if(compare_str(word_at_r, sub_at_clean)){
                 if(first_print==0){ printf("~"); }
-                printf("%s,", sub_at);
+                printf("%s", sub_at_clean);
                 first_print = 0;
             }
             if(compare_str(word_at, sub_at_r_clean)){
                 if(first_print==0){ printf("~"); }
-                printf("%s,", sub_at_r);
+                printf("%s", sub_at_r_clean);
                 first_print = 0;
             }
-            
 
             free(sub);
         }
-
-        // if(text[i] == '~') break; // End of text
     }
+}
 
+void print_anagram(){
+
+    int text_len=strlen(text);
+    int first_print=1;
     printf("\nAnagram Sequences: ");
-    for(int i = 0; i < TXT-1; i++){
+    for(int i = 0; i < text_len-1; i++){
         if(isalpha(text[i])==0) continue;
-
-        for(int j = i+1; j < TXT; j++){
+        
+        for(int j = i+1; j < text_len; j++){
             if(isalpha(text[j])==0) continue;
 
             if(text[j] == '\0') break; // End of text
 
-            char *sub = (char*) malloc((j-i+1)*sizeof(char));
+            char *sub = (char*) malloc((j-i+2)*sizeof(char));
             strncpy(sub, text+i, j-i+2);
             sub[j-i+1] = '\0';
             int len = strlen(sub);
-            char *sub2 = (char*) malloc((len+1)*sizeof(char));
-            strncpy(sub2, sub, len+1);
+            char *sub2 = (char*) malloc((len+2)*sizeof(char));
+            strcpy(sub2, sub);
             int flag = 1;
             if(exist(sub)==1){ // if all the chars in sub word exist in the input word
                 for(int i = 0; i < len; i++){ //check if all the array is 0
@@ -235,9 +237,22 @@ void main(){
                 flag = 0;
             }
             if(flag == 1){
-                printf("%s~", sub2);
+                if(first_print==0){ printf("~"); }
+                printf("%s", sub2);
+                first_print=0;
             }
+
+            free(sub);
+            free(sub2);
         }
     }
-    
+}
+
+void main(){
+    get_word();
+    get_text();
+    print_gematria();
+    print_atbash();
+    print_anagram();
+    printf("\n"); 
 }
