@@ -78,7 +78,6 @@ void reverse_str(char* a, char* out){
 
 void clear_white(char* a, char* b){
     int len_a = strlen(a);
-    int len_b = strlen(a);
     int a_i=0;
     int b_i=0;
     while(a_i<=len_a){
@@ -101,8 +100,6 @@ int compare_str(char* a, char* b){
 }
 
 void get_word(){
-    char c;
-    char t;
     for(int i = 0; i < WORD; i++){ // gets the word
         char c;
         scanf("%c", &c);
@@ -248,11 +245,13 @@ void print_anagram(){
     }
 }
 
-void main(){
+int main(){
     get_word();
     get_text();
     print_gematria();
     print_atbash();
     print_anagram();
     printf("\n"); 
+
+    return 0;
 }
