@@ -245,6 +245,7 @@ void print_anagram(){
     }
 }
 
+
 int main(){
     get_word();
     get_text();
