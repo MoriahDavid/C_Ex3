@@ -251,7 +251,6 @@ int main(){
     print_gematria();
     print_atbash();
     print_anagram();
-    printf("\n"); 
 
     return 0;
 }
