@@ -12,12 +12,12 @@
 char word[WORD];
 char text[TXT];
 
-int gimetry_sum(char w[]){
+int gimetry_sum(char* w, int len){
+
     int counter = 0;
-    for(int l = 0; l < WORD; l++){
+    for(int l = 0; l < len; l++){
         char c = tolower(w[l]);
-        if(c == '\0') break;
-        if(c > 122 || c < 97){
+        if(c > 'z' || c < 'a'){
             continue;
         }
         counter = counter + c-96;
@@ -128,28 +128,26 @@ void get_text(){
 
 void print_gematria(){
     int text_len=strlen(text);
+    int word_len=strlen(word);
 
     printf("Gematria Sequences: ");
-    int word_gim = gimetry_sum(word);
+    int word_gim = gimetry_sum(word, word_len);
     int first_print=1;
     for(int i = 0; i < text_len-1; i++){
         if(isalpha(text[i])==0) continue;
 
-        for(int j = i+1; j < text_len; j++){
+        for(int j = i; j < text_len; j++){
             if(isalpha(text[j])==0) continue;
 
             if(text[j] == '\0') break; // End of text
 
-            char *sub = (char*) malloc((j-i+2)*sizeof(char));
-            strncpy(sub, text+i, j-i+2);
-            sub[j-i+1] = '\0';
-            int sub_gim = gimetry_sum(sub);            
+            int sub_len = j-i+1;
+            int sub_gim = gimetry_sum(text+i, sub_len);
             if(sub_gim == word_gim){
                 if(first_print==0){ printf("~"); }
-                printf("%s",sub);
+                for(int x=0; x<sub_len; x++) {printf("%c", text[x+i]);}
                 first_print=0;
             }
-            free(sub);
             if(sub_gim > word_gim){
                 break;
             }
